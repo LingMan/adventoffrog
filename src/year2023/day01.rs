@@ -117,6 +117,8 @@ impl<'a> Puzzle<'a> for Day01<'a> {
             NIN_,
         }
 
+        struct DfaDigit();
+
         struct DfaOne(DfaOneState);
         struct DfaTwo(DfaTwoState);
         struct DfaThree(DfaThreeState);
@@ -136,6 +138,15 @@ impl<'a> Puzzle<'a> for Day01<'a> {
         struct DfaSevenBack(DfaSevenState);
         struct DfaEightBack(DfaEightState);
         struct DfaNineBack(DfaNineState);
+
+        impl Dfa for DfaDigit {
+            fn advance(&mut self, c: u8) -> Option<u8> {
+                match c {
+                    b'0'..=b'9' => Some(c - b'0'),
+                    _ => None,
+                }
+            }
+        }
 
         impl Dfa for DfaOne {
             fn advance(&mut self, c: u8) -> Option<u8> {
@@ -374,7 +385,8 @@ impl<'a> Puzzle<'a> for Day01<'a> {
         self.lines
             .iter()
             .map(|line| {
-                let mut automata: [&mut dyn Dfa; 9] = [
+                let mut automata: [&mut dyn Dfa; 10] = [
+                    &mut DfaDigit(),
                     &mut DfaOne(DfaOneState::S),
                     &mut DfaTwo(DfaTwoState::S),
                     &mut DfaThree(DfaThreeState::S),
@@ -385,7 +397,8 @@ impl<'a> Puzzle<'a> for Day01<'a> {
                     &mut DfaEight(DfaEightState::S),
                     &mut DfaNine(DfaNineState::S),
                 ];
-                let mut automata_back: [&mut dyn Dfa; 9] = [
+                let mut automata_back: [&mut dyn Dfa; 10] = [
+                    &mut DfaDigit(),
                     &mut DfaOneBack(DfaOneState::S),
                     &mut DfaTwoBack(DfaTwoState::S),
                     &mut DfaThreeBack(DfaThreeState::S),
@@ -396,33 +409,17 @@ impl<'a> Puzzle<'a> for Day01<'a> {
                     &mut DfaEightBack(DfaEightState::S),
                     &mut DfaNineBack(DfaNineState::S),
                 ];
-                let mut digits = line.bytes().enumerate().filter(|(_, c)| c.is_ascii_digit());
 
-                let (first_index, mut first_digit) = digits
-                    .next()
-                    .map(|(i, digit)| (i, digit - b'0'))
-                    .unwrap_or((usize::MAX, 0));
-                let (last_index, mut last_digit) = digits
-                    .next_back()
-                    .map(|(i, digit)| (i, digit - b'0'))
-                    .unwrap_or((first_index, first_digit));
-
-                for (index, c) in line.bytes().enumerate() {
-                    if first_index <= index {
-                        break;
-                    }
-
+                let mut first_digit = 0;
+                for c in line.bytes() {
                     if let Some(n) = automata.iter_mut().find_map(|a| a.advance(c)) {
                         first_digit = n;
                         break;
                     }
                 }
 
-                for (index, c) in line.bytes().enumerate().rev() {
-                    if last_index >= index {
-                        break;
-                    }
-
+                let mut last_digit = 0;
+                for c in line.bytes().rev() {
                     if let Some(n) = automata_back.iter_mut().find_map(|a| a.advance(c)) {
                         last_digit = n;
                         break;
