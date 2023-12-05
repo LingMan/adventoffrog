@@ -414,21 +414,15 @@ impl<'a> Puzzle<'a> for Day01<'a> {
                     &mut DfaNineBack(DfaNineState::S),
                 ];
 
-                let mut first_digit = 0;
-                for c in line.bytes() {
-                    if let Some(n) = automata.iter_mut().find_map(|a| a.advance(c)) {
-                        first_digit = n;
-                        break;
-                    }
-                }
-
-                let mut last_digit = 0;
-                for c in line.bytes().rev() {
-                    if let Some(n) = automata_back.iter_mut().find_map(|a| a.advance(c)) {
-                        last_digit = n;
-                        break;
-                    }
-                }
+                let first_digit = line
+                    .bytes()
+                    .find_map(|c| automata.iter_mut().find_map(|a| a.advance(c)))
+                    .unwrap_or_default();
+                let last_digit = line
+                    .bytes()
+                    .rev()
+                    .find_map(|c| automata_back.iter_mut().find_map(|a| a.advance(c)))
+                    .unwrap_or_default();
 
                 Self::Sol2Type::from(first_digit * 10 + last_digit)
             })
