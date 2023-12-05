@@ -35,27 +35,26 @@ fn main() -> Result<()> {
     }
 }
 
-macro_rules! load {
-    ($p:expr, $d:literal, $ex:expr) => {{
-        let path = $p.join(format!(
-            "{}{}.txt",
-            $d,
-            if let Some(x) = $ex {
-                format!("_example_{:?}", x)
-            } else {
-                "".to_string()
-            }
-        ));
-        &fs::read_to_string(&path).with_context(|| format!("Invalid path: {path:?}"))?
-    }};
+fn load(path: &PathBuf, day: u8, example: Option<u8>) -> Result<String> {
+    let path = path.join(format!(
+        "{:0>2}{}.txt",
+        day,
+        if let Some(x) = example {
+            format!("_example_{}", x)
+        } else {
+            "".to_string()
+        }
+    ));
+    fs::read_to_string(&path).with_context(|| format!("Invalid path: {path:?}"))
 }
 
 fn year_2022(args: Args) -> Result<()> {
     use crate::year2022::*;
 
     let path = args.input_path.join("2022");
+    let input = load(&path, args.day, args.example)?;
     match args.day {
-        1 => solve::<day01::Day01>(load!(path, "01", args.example)),
+        1 => solve::<day01::Day01>(&input),
         _ => bail!("Unknown day"),
     }
 }
@@ -64,9 +63,10 @@ fn year_2023(args: Args) -> Result<()> {
     use crate::year2023::*;
 
     let path = args.input_path.join("2023");
+    let input = load(&path, args.day, args.example)?;
     match args.day {
-        1 => solve::<day01::Day01>(load!(path, "01", args.example)),
-        2 => solve::<day02::Day02>(load!(path, "02", args.example)),
+        1 => solve::<day01::Day01>(&input),
+        2 => solve::<day02::Day02>(&input),
         _ => bail!("Unknown day"),
     }
 }
