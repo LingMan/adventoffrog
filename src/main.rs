@@ -18,8 +18,8 @@ struct Args {
     #[arg(value_parser = clap::value_parser!(u32).range(2022..=2023))]
     year: u32,
 
-    #[arg(long, default_value_t = false)]
-    example: bool,
+    #[arg(long, value_parser = clap::value_parser!(u8).range(1..=2))]
+    example: Option<u8>,
 
     #[arg(short, long, default_value = "input")]
     input_path: PathBuf,
@@ -37,7 +37,15 @@ fn main() -> Result<()> {
 
 macro_rules! load {
     ($p:expr, $d:literal, $ex:expr) => {{
-        let path = $p.join(format!("{}{}.txt", $d, if $ex { "_example" } else { "" }));
+        let path = $p.join(format!(
+            "{}{}.txt",
+            $d,
+            if let Some(x) = $ex {
+                format!("_example_{:?}", x)
+            } else {
+                "".to_string()
+            }
+        ));
         &fs::read_to_string(&path).with_context(|| format!("Invalid path: {path:?}"))?
     }};
 }
