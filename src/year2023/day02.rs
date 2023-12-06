@@ -8,13 +8,25 @@ pub struct Day02 {
 
 struct Game {
     id: u32,
-    sets: GameSets,
+    sets: Vec<GameSet>,
 }
 
-struct GameSets {
-    reds: Vec<u32>,
-    greens: Vec<u32>,
-    blues: Vec<u32>,
+struct GameSet {
+    red: u32,
+    green: u32,
+    blue: u32,
+}
+
+impl Game {
+    fn max_cube_numbers(&self) -> (u32, u32, u32) {
+        use std::cmp::max;
+        self.sets.iter().fold(
+            (0, 0, 0),
+            |(acc_r, acc_g, acc_b), &GameSet { red, green, blue }| {
+                (max(acc_r, red), max(acc_g, green), max(acc_b, blue))
+            },
+        )
+    }
 }
 
 impl FromStr for Game {
@@ -31,43 +43,35 @@ impl FromStr for Game {
             .parse()
             .with_context(|| format!("Failed to parse game ID: `{id}`"))?;
 
-        let sets = sets.parse()?;
+        let sets = sets.split("; ").map(str::parse).collect::<Result<_>>()?;
 
         Ok(Game { id, sets })
     }
 }
 
-impl FromStr for GameSets {
+impl FromStr for GameSet {
     type Err = anyhow::Error;
 
-    fn from_str(s: &str) -> Result<Self> {
-        let mut reds = Vec::new();
-        let mut greens = Vec::new();
-        let mut blues = Vec::new();
+    fn from_str(set: &str) -> Result<Self> {
+        let (red, green, blue) =
+            set.split(", ")
+                .try_fold((0, 0, 0), |(red, green, blue), color| {
+                    let (count, color) = color
+                        .split_once(" ")
+                        .with_context(|| format!("Failed to split color: `{color}`"))?;
+                    let count = count
+                        .parse()
+                        .with_context(|| format!("Failed to parse color count: `{count}`"))?;
 
-        for set in s.split("; ") {
-            for color in set.split(", ") {
-                let (count, color) = color
-                    .split_once(" ")
-                    .with_context(|| format!("Failed to split color: `{color}`"))?;
-                let count = count
-                    .parse()
-                    .with_context(|| format!("Failed to parse color count: `{count}`"))?;
+                    Ok(match color {
+                        "red" => (count, green, blue),
+                        "green" => (red, count, blue),
+                        "blue" => (red, green, count),
+                        _ => bail!("Unrecognized color {}", color),
+                    })
+                })?;
 
-                match color {
-                    "red" => reds.push(count),
-                    "green" => greens.push(count),
-                    "blue" => blues.push(count),
-                    _ => bail!("Unrecognized color {}", color),
-                }
-            }
-        }
-
-        Ok(GameSets {
-            reds,
-            greens,
-            blues,
-        })
+        Ok(GameSet { red, green, blue })
     }
 }
 
@@ -87,13 +91,11 @@ impl Puzzle<'_> for Day02 {
 
         self.games
             .iter()
-            .filter_map(|Game { id, sets }| {
-                let max_red = sets.reds.iter().max().copied().unwrap_or_default();
-                let max_green = sets.greens.iter().max().copied().unwrap_or_default();
-                let max_blue = sets.blues.iter().max().copied().unwrap_or_default();
+            .filter_map(|game| {
+                let (max_red, max_green, max_blue) = game.max_cube_numbers();
 
                 (max_red <= RED_LIMIT && max_green <= GREEN_LIMIT && max_blue <= BLUE_LIMIT)
-                    .then(|| *id)
+                    .then(|| game.id)
             })
             .sum()
     }
@@ -101,12 +103,9 @@ impl Puzzle<'_> for Day02 {
     fn solve_problem_2(&self) -> Self::Sol2Type {
         self.games
             .iter()
-            .map(|Game { sets, .. }| {
-                let min_red = sets.reds.iter().max().copied().unwrap_or_default();
-                let min_green = sets.greens.iter().max().copied().unwrap_or_default();
-                let min_blue = sets.blues.iter().max().copied().unwrap_or_default();
-
-                min_red * min_green * min_blue
+            .map(|game| {
+                let (max_red, max_green, max_blue) = game.max_cube_numbers();
+                max_red * max_green * max_blue
             })
             .sum()
     }
