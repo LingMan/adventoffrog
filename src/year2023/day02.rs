@@ -91,12 +91,12 @@ impl Puzzle<'_> for Day02 {
 
         self.games
             .iter()
-            .filter_map(|game| {
+            .filter(|game| {
                 let (max_red, max_green, max_blue) = game.max_cube_numbers();
 
-                (max_red <= RED_LIMIT && max_green <= GREEN_LIMIT && max_blue <= BLUE_LIMIT)
-                    .then(|| game.id)
+                max_red <= RED_LIMIT && max_green <= GREEN_LIMIT && max_blue <= BLUE_LIMIT
             })
+            .map(|game| game.id)
             .sum()
     }
 
