@@ -3,6 +3,7 @@ use clap::Parser;
 
 use std::fmt::Debug;
 use std::fs;
+use std::hint::black_box;
 use std::path::PathBuf;
 
 mod year2022;
@@ -73,17 +74,17 @@ fn year_2023(args: Args) -> Result<()> {
 
 fn solve<'a, T: Puzzle<'a>>(input: &'a str) -> Result<()> {
     let start = std::time::Instant::now();
-    let day_xy = T::parse(&input)?;
+    let day_xy = black_box(T::parse(&input))?;
     let parse_time = std::time::Instant::now() - start;
     println!("Parsed in {parse_time:?})");
 
     let start = std::time::Instant::now();
-    let solution_1 = day_xy.solve_problem_1();
+    let solution_1 = black_box(day_xy.solve_problem_1());
     let s1_time = std::time::Instant::now() - start;
     println!("Solution 1 is: {solution_1:?} (Computed in {s1_time:?})");
 
     let start = std::time::Instant::now();
-    let solution_2 = day_xy.solve_problem_2();
+    let solution_2 = black_box(day_xy.solve_problem_2());
     let s2_time = std::time::Instant::now() - start;
     println!("Solution 2 is: {solution_2:?} (Computed in {s2_time:?})");
     println!("Total time: {:?}", parse_time + s1_time + s2_time);
