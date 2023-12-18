@@ -6,21 +6,6 @@ pub struct Day01<'a> {
     lines: Vec<&'a str>,
 }
 
-trait Dfa {
-    fn advance(&mut self, c: u8) -> Option<u8>;
-}
-
-struct DfaDigit();
-
-impl Dfa for DfaDigit {
-    fn advance(&mut self, c: u8) -> Option<u8> {
-        match c {
-            b'0'..=b'9' => Some(c - b'0'),
-            _ => None,
-        }
-    }
-}
-
 /// An iterator over proceedingly shorter substrings of a string slice.
 ///
 /// ```
@@ -88,17 +73,16 @@ impl<'a> Puzzle<'a> for Day01<'a> {
         self.lines
             .iter()
             .map(|line| {
-                let mut automaton_f = DfaDigit();
-                let mut automaton_b = DfaDigit();
-
                 let first_digit = line
                     .bytes()
-                    .find_map(|c| automaton_f.advance(c))
+                    .find(|c| matches!(c, b'0'..=b'9'))
+                    .map(|c| c - b'0')
                     .unwrap_or_default();
                 let last_digit = line
                     .bytes()
                     .rev()
-                    .find_map(|c| automaton_b.advance(c))
+                    .find(|c| matches!(c, b'0'..=b'9'))
+                    .map(|c| c - b'0')
                     .unwrap_or_default();
 
                 Self::Sol1Type::from(first_digit * 10 + last_digit)
