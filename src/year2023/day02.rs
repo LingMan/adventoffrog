@@ -2,7 +2,7 @@ use crate::Puzzle;
 use anyhow::{bail, Context, Result};
 use std::str::FromStr;
 
-pub struct Day02 {
+pub struct Day {
     games: Vec<Game>,
 }
 
@@ -75,13 +75,13 @@ impl FromStr for GameSet {
     }
 }
 
-impl Puzzle<'_> for Day02 {
+impl Puzzle<'_> for Day {
     type Sol1Type = u32;
     type Sol2Type = Self::Sol1Type;
 
     fn parse(input: &str) -> Result<Self> {
         let games = input.lines().map(str::parse).collect::<Result<_>>()?;
-        Ok(Day02 { games })
+        Ok(Day { games })
     }
 
     fn solve_problem_1(&self) -> Self::Sol1Type {

@@ -66,9 +66,9 @@ fn year_2023(args: Args) -> Result<()> {
     let path = args.input_path.join("2023");
     let input = load(&path, args.day, args.example)?;
     match args.day {
-        1 => solve::<day01::Day01>(&input),
-        2 => solve::<day02::Day02>(&input),
-        3 => solve::<day03::Day03>(&input),
+        1 => solve::<day01::Day>(&input),
+        2 => solve::<day02::Day>(&input),
+        3 => solve::<day03::Day>(&input),
         _ => bail!("Unknown day"),
     }
 }

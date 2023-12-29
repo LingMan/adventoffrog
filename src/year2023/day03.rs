@@ -2,7 +2,7 @@ use crate::Puzzle;
 use anyhow::Result;
 use std::ops::Range;
 
-pub struct Day03 {
+pub struct Day {
     part_nums: Vec<PartNumber>,
     symbols: Vec<Symbol>,
 }
@@ -74,7 +74,7 @@ impl<'a, T: HasRows> AdjacencyCandidates<'a, T> {
     }
 }
 
-impl Puzzle<'_> for Day03 {
+impl Puzzle<'_> for Day {
     type Sol1Type = u64;
     type Sol2Type = u64;
 
@@ -124,7 +124,7 @@ impl Puzzle<'_> for Day03 {
             terminate_number!();
         }
 
-        Ok(Day03 { part_nums, symbols })
+        Ok(Day { part_nums, symbols })
     }
 
     fn solve_problem_1(&self) -> Self::Sol1Type {
@@ -177,7 +177,7 @@ mod tests {
 
     #[test]
     fn test_parsing() {
-        let parsed: Vec<_> = super::Day03::parse(INPUT)
+        let parsed: Vec<_> = super::Day::parse(INPUT)
             .unwrap()
             .part_nums
             .iter()

@@ -2,7 +2,7 @@ use crate::Puzzle;
 use anyhow::Result;
 use std::str::Chars;
 
-pub struct Day01<'a> {
+pub struct Day<'a> {
     lines: Vec<&'a str>,
 }
 
@@ -60,7 +60,7 @@ impl<'a> Iterator for RSubstrings<'a> {
     }
 }
 
-impl<'a> Puzzle<'a> for Day01<'a> {
+impl<'a> Puzzle<'a> for Day<'a> {
     type Sol1Type = u32;
     type Sol2Type = Self::Sol1Type;
 
