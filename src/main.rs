@@ -6,6 +6,7 @@ use std::fs;
 use std::hint::black_box;
 use std::path::PathBuf;
 
+mod util;
 mod year2022;
 mod year2023;
 
@@ -70,6 +71,7 @@ fn year_2023(args: Args) -> Result<()> {
         2 => solve::<day02::Day>(&input),
         3 => solve::<day03::Day>(&input),
         4 => solve::<day04::Day>(&input),
+        5 => solve::<day05::Day>(&input),
         _ => bail!("Unknown day"),
     }
 }
