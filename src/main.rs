@@ -78,7 +78,7 @@ fn year_2023(args: Args) -> Result<()> {
 
 fn solve<'a, T: Puzzle<'a>>(input: &'a str) -> Result<()> {
     let start = std::time::Instant::now();
-    let day_xy = black_box(T::parse(&input))?;
+    let day_xy = black_box(T::parse(input))?;
     let parse_time = std::time::Instant::now() - start;
     println!("Parsed in {parse_time:?})");
 
