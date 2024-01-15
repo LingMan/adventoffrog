@@ -78,7 +78,7 @@ impl Puzzle<'_> for Day {
             let matches = cur.count_matches();
             let cur_copies = counts[i];
             for count in counts[(i + 1)..(i + 1 + matches)].iter_mut() {
-                *count = *count + cur_copies;
+                *count += cur_copies;
             }
         }
 
