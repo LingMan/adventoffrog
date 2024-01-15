@@ -75,13 +75,13 @@ impl<'a> Puzzle<'a> for Day<'a> {
             .map(|line| {
                 let first_digit = line
                     .bytes()
-                    .find(|c| matches!(c, b'0'..=b'9'))
+                    .find(u8::is_ascii_digit)
                     .map(|c| c - b'0')
                     .unwrap_or_default();
                 let last_digit = line
                     .bytes()
                     .rev()
-                    .find(|c| matches!(c, b'0'..=b'9'))
+                    .find(u8::is_ascii_digit)
                     .map(|c| c - b'0')
                     .unwrap_or_default();
 
