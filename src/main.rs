@@ -4,7 +4,7 @@ use clap::Parser;
 use std::fmt::Debug;
 use std::fs;
 use std::hint::black_box;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 mod util;
 mod year2022;
@@ -37,7 +37,7 @@ fn main() -> Result<()> {
     }
 }
 
-fn load(path: &PathBuf, day: u8, example: Option<u8>) -> Result<String> {
+fn load(path: &Path, day: u8, example: Option<u8>) -> Result<String> {
     let path = path.join(format!(
         "{:0>2}{}.txt",
         day,
