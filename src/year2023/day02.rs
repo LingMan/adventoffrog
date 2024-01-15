@@ -37,7 +37,7 @@ impl FromStr for Game {
             .split_once(": ")
             .with_context(|| format!("Failed to split game: `{s}`"))?;
         let (_, id) = id
-            .split_once(" ")
+            .split_once(' ')
             .with_context(|| format!("Failed to split game ID: `{id}`"))?;
         let id = id
             .parse()
@@ -57,7 +57,7 @@ impl FromStr for GameSet {
             set.split(", ")
                 .try_fold((0, 0, 0), |(red, green, blue), color| {
                     let (count, color) = color
-                        .split_once(" ")
+                        .split_once(' ')
                         .with_context(|| format!("Failed to split color: `{color}`"))?;
                     let count = count
                         .parse()

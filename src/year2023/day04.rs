@@ -32,13 +32,13 @@ impl FromStr for Card {
             .with_context(|| format!("Failed to split numbers: `{numbers}`"))?;
 
         let winners = winners
-            .split(" ")
+            .split(' ')
             .filter(|n| !n.is_empty())
             .map(str::parse)
             .collect::<Result<_, _>>()
             .with_context(|| format!("Failed to parse winners: `{winners}`"))?;
         let draws = draws
-            .split(" ")
+            .split(' ')
             .filter(|n| !n.is_empty())
             .map(str::parse)
             .collect::<Result<_, _>>()
