@@ -22,7 +22,9 @@ impl Mapping {
         let contains_end = self.src.contains(&(value.end - 1));
 
         // Put the "no overlap" case first, since it's by far the most common one
-        if !contains_start && !contains_end {
+        if (!contains_start && !contains_end)
+            && ((value.start < self.src.start) == (value.end < self.src.end))
+        {
             // No overlap
             unmapped.push(value);
         } else if contains_start && contains_end {
@@ -213,6 +215,7 @@ impl<'a> Puzzle<'a> for Day<'a> {
 #[cfg(test)]
 mod tests {
     use crate::Puzzle;
+    use indoc::indoc;
 
     #[test]
     fn test_example() {
@@ -220,5 +223,22 @@ mod tests {
         let day = super::Day::parse(&input).unwrap();
         assert_eq!(day.solve_problem_1().unwrap(), 35);
         assert_eq!(day.solve_problem_2().unwrap(), 46);
+    }
+
+    #[test]
+    fn test_input_range_wider_than_mapping() {
+        // While at it, also test that maps can be specified out of order
+        const INPUT: &str = indoc! {"
+            seeds: 50 30
+
+            water-to-location map:
+            20 30 10
+
+            seed-to-water map:
+            30 60 10
+        "};
+
+        let day = super::Day::parse(INPUT).unwrap();
+        assert_eq!(day.solve_problem_2().unwrap(), 20);
     }
 }
