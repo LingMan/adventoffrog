@@ -80,7 +80,7 @@ fn solve<'a, T: Puzzle<'a>>(input: &'a str) -> Result<()> {
     let start = std::time::Instant::now();
     let day_xy = black_box(T::parse(input))?;
     let parse_time = std::time::Instant::now() - start;
-    println!("Parsed in {parse_time:?})");
+    println!("Parsed in {parse_time:?}");
 
     let start = std::time::Instant::now();
     let solution_1 = black_box(day_xy.solve_problem_1());
