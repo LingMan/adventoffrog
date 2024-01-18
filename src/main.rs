@@ -72,6 +72,7 @@ fn year_2023(args: Args) -> Result<()> {
         3 => solve::<day03::Day>(&input),
         4 => solve::<day04::Day>(&input),
         5 => solve::<day05::Day>(&input),
+        6 => solve::<day06::Day>(&input),
         _ => bail!("Unknown day"),
     }
 }
